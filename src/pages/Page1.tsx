@@ -1,11 +1,24 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import usePerro from "../hooks/usePerro";
+import { useEffect } from "react";
 
 const Page1: React.FC = () => {
-  
-    return (
-      <Box>holis page 1</Box>
-    );
-  };
-  
-  export default Page1;
-  
+  const { count, increment, isActive, toggleActive } = usePerro();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      increment();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <Box>
+      {isActive ? <Box>{count}</Box> : null}
+      <Button onClick={() => toggleActive()}>Toggle Active</Button>
+    </Box>
+  );
+};
+
+export default Page1;

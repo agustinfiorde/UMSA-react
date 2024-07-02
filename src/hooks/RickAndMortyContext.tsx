@@ -1,41 +1,63 @@
-import React, { createContext, useState, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from "react";
+import { CharacterI, EpisodeI, LocationI } from "../types/rickAndMorty.type";
+import { fetchCharacters, fetchEpisodes, fetchLocations } from "../services/example.service";
 
 type RickAndMortyContextType = {
-  id: number;
-  name: string;
+  characters: CharacterI[];
+  locations: LocationI[];
+  episodes: EpisodeI[];
 };
 
 const RickAndMortyContext = createContext<RickAndMortyContextType | undefined>(
   undefined
 );
 
-export const RickAndMortyProvider: React.FC = ({ children }) => {
-  const [characters, setCharacters] = useState<any[]>([]);
+interface RickAndMortyProviderProps {
+  children: ReactNode;
+}
 
-  const fetchUser = () => {
-    const fetchedUser: User = {
-      id: 1,
-      name: "John Doe",
-    };
-    setUser(fetchedUser);
-  };
+export const RickAndMortyProvider: React.FC<RickAndMortyProviderProps> = ({
+  children,
+}) => {
+  const [characters, setCharacters] = useState<CharacterI[]>([]);
+  const [locations, setLocations] = useState<LocationI[]>([]);
+  const [episodes, setEpisodes] = useState<EpisodeI[]>([]);
 
-  useState(() => {
-    fetchUser();
+  useEffect(() => {
+    try {
+      fetchCharacters().then((data) => {
+        setCharacters(data.results);
+      });
+      fetchLocations().then((data) => {
+        setLocations(data.results);
+      });
+      fetchEpisodes().then((data) => {
+        setEpisodes(data.results);
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   }, []);
 
   return (
-    <RickAndMortyContext.Provider value={user}>
+    <RickAndMortyContext.Provider value={{ characters, locations, episodes }}>
       {children}
     </RickAndMortyContext.Provider>
   );
 };
 
-// Función custom hook para consumir el contexto
 export const useRickAndMorty = () => {
   const context = useContext(RickAndMortyContext);
   if (context === undefined) {
-    throw new Error("useUser must be used within a UserProvider");
+    throw new Error(
+      "useRickAndMorty must be used within a RickAndMortyProvider"
+    );
   }
   return context;
 };
