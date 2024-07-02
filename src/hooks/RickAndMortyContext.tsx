@@ -6,12 +6,17 @@ import React, {
   ReactNode,
 } from "react";
 import { CharacterI, EpisodeI, LocationI } from "../types/rickAndMorty.type";
-import { fetchCharacters, fetchEpisodes, fetchLocations } from "../services/example.service";
+import {
+  fetchCharacters,
+  fetchEpisodes,
+  fetchLocations,
+} from "../services/example.service";
 
 type RickAndMortyContextType = {
   characters: CharacterI[];
   locations: LocationI[];
   episodes: EpisodeI[];
+  editData: ()=>void;
 };
 
 const RickAndMortyContext = createContext<RickAndMortyContextType | undefined>(
@@ -45,8 +50,10 @@ export const RickAndMortyProvider: React.FC<RickAndMortyProviderProps> = ({
     }
   }, []);
 
+  const editData = () => console.log("Holis soy edit Data");
+
   return (
-    <RickAndMortyContext.Provider value={{ characters, locations, episodes }}>
+    <RickAndMortyContext.Provider value={{ characters, locations, episodes, editData }}>
       {children}
     </RickAndMortyContext.Provider>
   );

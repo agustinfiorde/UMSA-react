@@ -3,12 +3,15 @@ import usePerro from "../hooks/usePerro";
 import { useEffect } from "react";
 
 const Page1: React.FC = () => {
-  const { count, increment, isActive, toggleActive } = usePerro();
+  const { count, increment, isActive, toggleActive } = usePerro({
+    initialCount: 192,
+    initialIsActive: true,
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
       increment();
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);
